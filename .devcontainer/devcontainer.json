@@ -1,10 +1,6 @@
 {
-    // DevContainer Toolbox — test setup for one-command update E2E
-    // Pinned to v1.7.16 so dev-update can detect v1.7.17 as available
-    "image": "ghcr.io/helpers-no/devcontainer-toolbox:1.7.16",
+    "image": "ghcr.io/helpers-no/devcontainer-toolbox:latest",
     "overrideCommand": false,
-
-    // VPN capabilities
     "runArgs": [
         "--cap-add=NET_ADMIN",
         "--cap-add=NET_RAW",
@@ -13,7 +9,6 @@
         "--device=/dev/net/tun:/dev/net/tun",
         "--privileged"
     ],
-
     "customizations": {
         "vscode": {
             "extensions": [
@@ -23,25 +18,39 @@
                 "mhutchie.git-graph",
                 "timonwong.shellcheck"
             ]
+        },
+        "devcontainer-toolbox": {
+            "documentation": "https://dct.sovereignsky.no/docs/contributors/architecture/devcontainer-json",
+            "managed": "This file is managed by dev-update. Do not edit — changes will be overwritten."
         }
     },
-
     "remoteEnv": {
         "DCT_HOME": "/opt/devcontainer-toolbox",
         "DCT_WORKSPACE": "/workspace",
-        "DCT_IMAGE_VERSION": "1.7.16"
+        "DCT_IMAGE_VERSION": "1.7.35",
+        "DEV_HOST_USER": "${localEnv:USER}",
+        "DEV_HOST_USERNAME": "${localEnv:USERNAME}",
+        "DEV_HOST_OS": "${localEnv:OS}",
+        "DEV_HOST_HOME": "${localEnv:HOME}",
+        "DEV_HOST_LOGNAME": "${localEnv:LOGNAME}",
+        "DEV_HOST_LANG": "${localEnv:LANG}",
+        "DEV_HOST_SHELL": "${localEnv:SHELL}",
+        "DEV_HOST_TERM_PROGRAM": "${localEnv:TERM_PROGRAM}",
+        "DEV_HOST_HOSTNAME": "${localEnv:HOSTNAME}",
+        "DEV_HOST_COMPUTERNAME": "${localEnv:COMPUTERNAME}",
+        "DEV_HOST_PROCESSOR_ARCHITECTURE": "${localEnv:PROCESSOR_ARCHITECTURE}",
+        "DEV_HOST_ONEDRIVE": "${localEnv:OneDrive}"
     },
-
-    "workspaceFolder": "/workspace",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-
     "features": {
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
     },
-
+    "workspaceFolder": "/workspace",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "remoteUser": "vscode",
     "containerUser": "vscode",
     "shutdownAction": "stopContainer",
     "updateRemoteUserUID": true,
-    "init": true
+    "init": true,
+    "initializeCommand": "mkdir -p .devcontainer.secrets/env-vars && hostname -s > .devcontainer.secrets/env-vars/.host-hostname 2>/dev/null || hostname > .devcontainer.secrets/env-vars/.host-hostname 2>/dev/null || true",
+    "postStartCommand": "bash /opt/devcontainer-toolbox/additions/config-host-info.sh --verify 2>/dev/null || true"
 }
